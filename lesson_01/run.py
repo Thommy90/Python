@@ -16,3 +16,5 @@ class D(B, C):
 
 print(D.mro())
 D().foo()
+
+print("Hello world")
