@@ -83,12 +83,14 @@ def update_student(id_: int, payload: dict | str | list | int) -> dict:
 
     return students[id_]
 
+
 def add_marks(id_: int, new_marks: list[int]):
     if id_ not in students:
         raise KeyError(f"Student with ID {id_} does not exist.")
     students[id_]["marks"].extend(new_marks)
 
     return students[id_]
+
 
 def student_details(student: dict) -> None:
     print(f"Detailed info: [{student['name']}, {student['marks']}]")
@@ -228,7 +230,8 @@ def handle_management_command(command: str):
         else:
             if data := ask_student_payload("add_marks"):
                 while True:
-                    confirm = input(f"Are you sure you want to add these marks {data} to student with id {id_}? (y/n): ")
+                    confirm = input(
+                        f"Are you sure you want to add these marks {data} to student with id {id_}? (y/n): ")
                     if confirm == 'y':
                         add_marks(id_, data)
                         print(f"✅ Marks are added")
@@ -280,7 +283,8 @@ def handle_management_command(command: str):
         else:
             if data := ask_student_payload("update"):
                 while True:
-                    confirm = input(f"Are you sure you want to change these student's data {data} with id {id_}? (y/n): ")
+                    confirm = input(
+                        f"Are you sure you want to change these student's data {data} with id {id_}? (y/n): ")
                     if confirm == 'y':
                         update_student(id_, data)
                         print(f"✅ Student is updated")
