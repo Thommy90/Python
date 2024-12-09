@@ -6,4 +6,5 @@ id,name,marks,info
 5,Kostya,1;1;1,
 6,tom,1;2;3;1;1;1;1,
 7,Misha,3;4;5;1;2;3,
-LAST_ID_CONTEXT,7,,
+12,ko,1;2;3,
+LAST_ID_CONTEXT,12,,
