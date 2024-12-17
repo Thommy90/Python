@@ -102,21 +102,22 @@ class Price:
             raise ValueError("Currency must be number")
 
 
-@auth
-def command():
-    phone = Price(value=200, currency="EUR")
-    tablet = Price(value=400, currency="USD")
-    keyboard = Price(value=30, currency="USD")
-    total: Price = keyboard + tablet
-    print(total)
+if __name__ == "__main__":
+    #@auth
+    def command():
+        phone = Price(value=200, currency="EUR")
+        tablet = Price(value=400, currency="USD")
+        keyboard = Price(value=30, currency="USD")
+        total: Price = keyboard + tablet
+        print(total)
 
-    total: Price = tablet - keyboard
-    print(total)
+        total: Price = tablet - keyboard
+        print(total)
 
-    print(keyboard + phone)
+        print(keyboard + phone)
 
-    print(phone - keyboard)
+        print(phone - keyboard)
 
 
-command()
-command()
+    command()
+    command()
