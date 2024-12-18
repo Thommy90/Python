@@ -1,7 +1,7 @@
 import logging
 
 # Configure logging for debugging and tracking operations
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(level=logging.INFO, format="{asctime} - {levelname} - {message}", style="{")
 
 # Global configuration representing application settings
 GLOBAL_CONFIG = {
@@ -26,21 +26,18 @@ class Configuration:
         Enter the context: Apply the configuration updates.
         """
 
-        # TODO: Save a copy of the current GLOBAL_CONFIG so it can be restored later.
-        # TODO: Log the changes for debugging purposes.
-        # TODO: Apply the updates to the GLOBAL_CONFIG.
-
         self.original_config = GLOBAL_CONFIG.copy()
         logging.info(f"Original copy saved: {self.original_config}")
 
-        GLOBAL_CONFIG.update(self.updates)
-        logging.info(f"Updates applied: {GLOBAL_CONFIG}")
-
-        if self.validator and not self.validator(GLOBAL_CONFIG):
-            logging.error(f"Validation failed: {GLOBAL_CONFIG}")
-            GLOBAL_CONFIG.clear()
-            GLOBAL_CONFIG.update(self.original_config)
-            raise ValueError("Validation failed")
+        try:
+            GLOBAL_CONFIG.update(self.updates)
+            logging.info(f"Attempting to apply updates: {GLOBAL_CONFIG}")
+            if self.validator:
+                self.validator(GLOBAL_CONFIG)
+            logging.info(f"Updates applied: {GLOBAL_CONFIG}")
+        except Exception as error1:
+            self.__restore_config()
+            raise ValueError (f"Validation or update failed: {error1}")
 
         return self
 
@@ -48,62 +45,55 @@ class Configuration:
         """
         Exit the context: Restore the original configuration.
         """
-        # TODO: If a validator is provided, check the modified configuration.
-        # If the validation fails, log the error and restore the original configuration.
-
-        # TODO: If an exception occurs within the context block, ensure the original configuration is restored.
-
-        # TODO: Log the restoration of the configuration for transparency.
-
-
-        if self.validator and not self.validator(GLOBAL_CONFIG):
-            logging.error(f"Validation failed on exit: {GLOBAL_CONFIG}", )
-
-        GLOBAL_CONFIG.clear()
-        GLOBAL_CONFIG.update(self.original_config)
-        logging.info(f"Configuratuion restored: {GLOBAL_CONFIG}")
-
+        self.__restore_config()
         if exc_type:
             logging.error(f"Exception: {exc_value}", )
         return False
 
-# Example validator function (Optional)
-def validate_config(config: dict) -> bool:
+    def __restore_config(self):
+        GLOBAL_CONFIG.clear()
+        GLOBAL_CONFIG.update(self.original_config)
+        logging.info(f"Configuratuion restored: {GLOBAL_CONFIG}")
+
+    # Example validator function (Optional)
+def validate_config(config: dict):
     """
     Example validator function to check the validity of the configuration.
     Ensures 'max_retries' is non-negative and 'feature_a' is a boolean.
     """
-    # TODO: Implement validation logic, e.g., ensure 'max_retries' is non-negative.
     if not isinstance(config.get("feature_a"), bool):
-        logging.error("feature_a is not boolean.")
-        return False
+        raise ValueError("feature_a is not boolean.")
     if config.get("max_retries", 0) < 0:
-        logging.error("max_retries can't be negative.")
-        return False
-    return True
+        raise ValueError("max_retries can't be negative.")
 
 
 # Example usage (for students to test once implemented)
 if __name__ == "__main__":
-    logging.info("Initial GLOBAL_CONFIG: %s", GLOBAL_CONFIG)
+    logging.info(f"Initial GLOBAL_CONFIG: {GLOBAL_CONFIG}")
 
     # Example 1: Successful configuration update
     try:
-        # TODO: Use the Configuration context manager to update 'feature_a' and 'max_retries'
         with Configuration({"feature_a": False, "max_retries": 5}):
-            logging.info("Inside context: %s", GLOBAL_CONFIG)
-    except Exception as e:
-        logging.error("Error: %s", e)
+            logging.info(f"Inside context: {GLOBAL_CONFIG}")
+    except Exception as error:
+        logging.error(f"Error: {error}", )
 
-    logging.info("After context: %s", GLOBAL_CONFIG)
+    logging.info(f"After context: {GLOBAL_CONFIG}",)
 
-    # Example 2: Configuration update with validation failure
+    # Example 2: Configuration update with validation failure feature_a not boolean
     try:
-        # TODO: Use the Configuration context manager with invalid updates and a validator
         # to see how the context handles validation errors.
-        with Configuration({"feature_a": "invalid_value", "max_retries": -1}, validator=validate_config):
+        with Configuration({"feature_a": "invalid_value", "max_retries": 3}, validator=validate_config):
             logging.info("This should not be printed if validation fails.")
-    except Exception as e:
-        logging.error("Caught exception: %s", e)
+    except Exception as error:
+        logging.error(f"Caught exception: {error}")
 
-    logging.info("After failed context: %s", GLOBAL_CONFIG)
+    # Example 3: Configuration update with validation failure max_retries < 0
+    try:
+        # to see how the context handles validation errors.
+        with Configuration({"feature_a": True, "max_retries": -1}, validator=validate_config):
+            logging.info("This should not be printed if validation fails.")
+    except Exception as error:
+        logging.error(f"Caught exception: {error}")
+
+    logging.info(f"After failed context: {GLOBAL_CONFIG}")

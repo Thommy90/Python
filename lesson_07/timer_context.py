@@ -17,7 +17,7 @@ class TimerContext:
 
 
 # Set up logging configuration
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(level=logging.INFO, format="{asctime} - {levelname} - {message}", style="{")
 
 with TimerContext():
     time.sleep(2)
