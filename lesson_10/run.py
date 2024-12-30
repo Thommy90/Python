@@ -1,4 +1,6 @@
 import random
+import time
+from queue import Queue
 from threading import Thread
 
 def fill_list(numbers):
@@ -23,49 +25,46 @@ def calculate_average(numbers):
     else:
         raise ValueError("The list is empty")
 
-
-
-result = 0
-
-def count_prime(num):
-    global result
-    counter = 0
-    for j in range(1, num + 1):
+def get_primes_amount(num: int, queue: Queue):
+    if num < 2:
+        return
+    for j in range(2, int(num ** 0.5) + 1):
         if num % j == 0:
-            counter += 1
-        if counter > 2:
             return
-    result += 1
-
-def get_primes_amount(nums):
-    global result
-    result = 0
-    threads = []
-
-    for num in nums:
-        thread = Thread(target=count_prime, args=(num,))
-        threads.append(thread)
-        thread.start()
-
-    for thread in threads:
-        thread.join()
-
-    return result
+    queue.put(1)
 
 
 def main():
     numbers = []
 
     t1 = Thread(target=fill_list, args=(numbers,))
-    t2 = Thread(target=lambda: (t1.join(), calculate_sum(numbers)))
-    t3 = Thread(target=lambda: (t1.join(), calculate_average(numbers)))
+    t2 = Thread(target=calculate_sum, args=(numbers,))
+    t3 = Thread(target=calculate_average, args=(numbers,))
+
 
     t1.start()
+    t1.join()
+
     t2.start()
     t3.start()
 
-    numbers_two = [40000, 400, 1000000, 700, 2]
-    print("The number of prime numbers: ", get_primes_amount(numbers_two))
+    t2.join()
+    t3.join()
+
+    numbers_two = [40000, 400, 1000000, 700, 2, 3, 4]
+
+    threads = []
+    queue = Queue()
+
+    for number in numbers_two:
+        thread = Thread(target=get_primes_amount, args=(number, queue))
+        threads.append(thread)
+        thread.start()
+
+    for thread in threads:
+        thread.join()
+
+    print(f"The number of prime numbers: {queue.qsize()}")
 
 
 if __name__ == "__main__":
