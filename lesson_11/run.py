@@ -14,11 +14,11 @@ async def ahttp_request(url: str) -> str:
     return response.json()["name"]
 
 
-async def ahttpx_request(client: httpx.AsyncClient, url: str) -> str:
+async def http_request(url: str) -> str:
     print(f"Requesting {url}")
-    response: requests.Response = await client.get(url)
-
-    return response.json()["name"]
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
+        return response.json()["name"]
 
 
 def get_urls(n: int) -> list[str]:
@@ -27,9 +27,8 @@ def get_urls(n: int) -> list[str]:
 
 async def async_pokemons_httpx():
     urls: list[str] = get_urls(n=50)
-    async with httpx.AsyncClient() as client:
-        tasks = [ahttpx_request(client, url) for url in urls]
-        results = await asyncio.gather(*tasks)
+    tasks = [http_request(url) for url in urls]
+    results = await asyncio.gather(*tasks)
 
     return results
 
