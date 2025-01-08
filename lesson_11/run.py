@@ -13,17 +13,15 @@ async def ahttp_request(url: str) -> str:
 
     return response.json()["name"]
 
+def get_urls(n: int) -> list[str]:
+    return [BASE_URL.format(pokemon_id=random.randint(1, 500)) for _ in range(n)]
+
 
 async def http_request(url: str) -> str:
     print(f"Requesting {url}")
     async with httpx.AsyncClient() as client:
         response = await client.get(url)
         return response.json()["name"]
-
-
-def get_urls(n: int) -> list[str]:
-    return [BASE_URL.format(pokemon_id=random.randint(1, 500)) for _ in range(n)]
-
 
 async def async_pokemons_httpx():
     urls: list[str] = get_urls(n=50)
