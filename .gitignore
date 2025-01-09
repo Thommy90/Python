@@ -2,3 +2,9 @@
 
 .idea/
 .vscode/
+
+__pycache__/
+
+# Ignore virtual environments
+venv/
+env/
