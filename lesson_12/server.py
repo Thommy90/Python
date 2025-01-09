@@ -94,6 +94,27 @@ async def get_exchange_rate() -> str:
 
 @app.get("/fetch-market")
 async def fetch_market():
+
+    """
+       User Request:           None
+       User Response:          str
+
+       Alphavantage Request:   dict
+       Alphavantage Response:  dict
+       {'Realtime Currency Exchange Rate': {'1. From_Currency Code': 'UAH',
+                '2. From_Currency Name': 'Ukrainian '
+                                         'Hryvnia',
+                '3. To_Currency Code': 'USD',
+                '4. To_Currency Name': 'United States '
+                                       'Dollar',
+                '5. Exchange Rate': '0.02380000',
+                '6. Last Refreshed': '2025-01-06 19:37:43',
+                '7. Time Zone': 'UTC',
+                '8. Bid Price': '0.02379000',
+                '9. Ask Price': '0.02380000'}
+       }
+       """
+
     rate = await get_exchange_rate()
     return {"rate": rate}
 
