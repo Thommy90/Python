@@ -89,10 +89,13 @@ async def get_exchange_rate() -> str:
     )
     async with httpx.AsyncClient() as client:
         response = await client.get(url)
-        data = response.json()
+        data = await response.json()
         return data["Realtime Currency Exchange Rate"]["5. Exchange Rate"]
 
-
+@app.get("/fetch-market")
+async def fetch_market():
+    rate = await get_exchange_rate()
+    return {"rate": rate}
 
 @app.get("/article-idea")
 async def article_idea():
@@ -107,3 +110,4 @@ async def story_fiction():
 @app.get("/technical-guide")
 async def technical_guide():
     return await article_service.generate_technical_guide()
+
