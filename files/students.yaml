@@ -1,0 +1,38 @@
+LAST_ID_CONTEXT: 8
+students:
+  '1':
+    info: 'John is 22 y.o. Hobbies: music'
+    marks:
+    - 4
+    - 5
+    - 1
+    - 4
+    - 5
+    - 2
+    - 5
+    name: John Doe
+  '4':
+    marks:
+    - 1
+    - 1
+    - 1
+    - 1
+    name: Kostya
+  '5':
+    marks:
+    - 1
+    - 3
+    - 4
+    name: Misha
+  '7':
+    marks:
+    - 1
+    - 2
+    - 3
+    name: Lena
+  '8':
+    marks:
+    - 1
+    - 3
+    - 4
+    name: Igor
